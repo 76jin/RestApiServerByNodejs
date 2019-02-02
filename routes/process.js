@@ -43,4 +43,21 @@ router.get('/login/:name', function (req, res) {
   });
 });
 
+router.get('/setUserCookie', function (req, res) {
+  console.log("### /process/setUserCookie called...");
+
+  res.cookie('user', {
+    id: 'mike',
+    name: '소녀시대',
+    authorized: true
+  });
+
+  res.redirect('/process/showCookie');
+});
+
+router.get('/showCookie', function (req, res) {
+  console.log("### /process/showCookie called...");
+  res.send(req.cookies);
+});
+
 module.exports = router;
