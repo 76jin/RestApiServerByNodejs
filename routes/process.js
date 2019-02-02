@@ -27,4 +27,20 @@ router.post('/login', function (req, res, next) {
   });
 });
 
+router.get('/login/:name', function (req, res) {
+  console.log("GET /process/login/:name 처리중..");
+
+  var queryName = req.query.id;
+  var name = req.params.name;
+
+  console.log("### queryName:", queryName);
+  console.log("### param name:", name);
+
+  //  res.send("/login/:name is processed.");
+  res.render('login_name', {
+    title: 'URL 파라미터 사용 결과',
+    name: name
+  });
+});
+
 module.exports = router;
