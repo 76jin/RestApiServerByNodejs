@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  div
+    a(href='/') 1. Welcome pug
+    br
+    a(href='/sample/param-name?name=mike') 2. Get 파라미터 예제
+    br 
+    a(href='/process/login') 3. Post 파라미터 예제 (로그인)
