@@ -8,4 +8,10 @@ router.get('/', function (req, res, next) {
   });
 });
 
+router.get('/product', function (req, res) {
+  res.render('product', {
+    title: '상품정보 페이지'
+  });
+});
+
 module.exports = router;

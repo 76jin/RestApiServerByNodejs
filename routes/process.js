@@ -60,4 +60,68 @@ router.get('/showCookie', function (req, res) {
   res.send(req.cookies);
 });
 
+router.get('/product', function (req, res) {
+  console.log("### /process/product called...");
+
+  if (req.session.user) {
+    res.redirect('/product');
+  } else {
+    res.redirect('/process/login2');
+  }
+});
+
+router.get('/login2', function (req, res, next) {
+  console.log("GET /process/login2 처리중...");
+
+  res.render('login2', {
+    title: '세션을 사용한 로그인 페이지'
+  });
+});
+
+router.post('/login2', function (req, res, next) {
+  console.log("POST /process/login2 처리중...");
+
+  var id = req.body.id || req.query.id;
+  var password = req.body.password || req.query.password;
+
+  console.log("#### id:", req.body.id);
+  console.log("#### password:", req.body.password);
+
+  if (req.session.user) {
+    console.log('이미 로그인되어 상품 페이지로 이동합니다.');
+    res.redirect('/product');
+  } else {
+    req.session.user = {
+      id: id,
+      name: '트와이스',
+      authorized: true
+    };
+  }
+
+  res.render('login_result2', {
+    title: '로그인 성공',
+    id: id,
+    password: password
+  });
+});
+
+router.get('/logout', function (req, res) {
+  console.log("POST /process/logout called...");
+
+  if (req.session.user) {
+    console.log("로그아웃합니다.");
+    req.session.destroy(function (err) {
+      if (err) {
+        throw err;
+      }
+
+      console.log("## 세션을 삭제하고 로그아웃되었습니다.");
+      res.redirect('/process/login2');
+    });
+  } else {
+    console.log("아직 로그인되지 않았습니다.");
+    res.redirect('/process/login2');
+  }
+});
+
 module.exports = router;
