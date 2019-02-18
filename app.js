@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var morgan = require('morgan');
 
+var MongoClient = require('mongodb').MongoClient;
+var database; // 데이터베이스 객체
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var sampleRouter = require('./routes/sample');
@@ -18,6 +21,19 @@ var logger = winston;
 app.use(morgan('combined', {
   stream: winston.stream
 }));
+
+// 데이터베이스 연결 
+function connectDB() {
+  var databaseUrl = 'mongodb://localhost:27017/local';
+
+  MongoClient.connect(databaseUrl, function (err, db) {
+    if (err) throw err;
+    logger.info("### 데이터베이스에 연결됐습니다 :" + databaseUrl);
+    database = db.db('local');
+
+    usersRouter.init(database);
+  });
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -59,5 +75,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+connectDB();
 
 module.exports = app;

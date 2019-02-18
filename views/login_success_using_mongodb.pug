@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1= title
+  p 사용자 아이디 : #{id}
+  p 사용자 이름 : #{name}
+  br 
+  a(href="/users/login_using_mongodb") 다시 로그인하기
