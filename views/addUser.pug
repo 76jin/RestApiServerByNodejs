@@ -1,0 +1,25 @@
+doctype html
+html(lang='ko')
+  head
+    title 사용자 추가 테스트
+  body
+    h1 사용자 추가
+    form(action="/users/addUser", method="post")
+      table
+        tbody
+          tr
+            td
+              label 아이디
+            td
+              input(type="text", name="id")
+          tr
+            td
+              label 비밀번호
+            td
+              input(type="password", name="password")
+          tr
+            td
+              label 사용자명
+            td
+              input(type="text", name="name")
+      input(type='submit', value='추가', name='')

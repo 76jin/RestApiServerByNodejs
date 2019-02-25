@@ -84,5 +84,76 @@ router.post('/login_using_mongodb', function (req, res) {
   }
 });
 
+// 사용자를 추가하는 함수 
+var addUser = function (database, id, password, name, callback) {
+  logger.info(`addUser 호출됨:${id}, ${password}, ${name}`);
+
+  var users = database.collection('users');
+
+  users.insertMany([{
+    "id": id,
+    "password": password,
+    "name": name
+  }], function (err, result) {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    if (result.insertedCount > 0) {
+      logger.info(`사용자 레코드 추가됨 : ${result.insertedCount}`);
+    } else {
+      logger.info("추가된 레코드 없음.");
+    }
+    callback(null, result);
+  });
+}
+
+// 사용자 추가 라우팅 
+router.get('/addUser', function (req, res) {
+  logger.info("### /users/addUser called...");
+  res.render('addUser');
+});
+
+router.post('/addUser', function (req, res) {
+  logger.info('POST /users/addUser 호출됨.');
+
+  var id = req.body.id;
+  var password = req.body.password;
+  var name = req.body.name;
+
+  logger.info(`요청 파라미터: ${id}, ${password}, ${name}`);
+
+  if (!database) {
+    res.writeHead(200, {
+      'Content-Type': 'text/html;charset=utf8'
+    });
+    res.write('<h2>데이터베이스 연결 실패</h2>');
+    res.write('<div><p>데이터베이스에 연결하지 못했습니다.</p></div>');
+    res.end();
+  }
+
+  addUser(database, id, password, name, function (err, result) {
+    if (err) {
+      throw err;
+    }
+    if (result && result.insertedCount > 0) {
+      logger.info(`${JSON.stringify(result)}`);
+
+      res.writeHead(200, {
+        'Content-Type': 'text/html;charset=utf8'
+      });
+      res.write('<h2>사용자 추가 성공</h2>');
+      res.end();
+    } else {
+      res.writeHead(200, {
+        'Content-Type': 'text/html;charset=utf8'
+      });
+      res.write('<h2>사용자 추가 실패</h2>');
+      res.end();
+    }
+  });
+});
+
 module.exports = router;
 module.exports.init = init;
